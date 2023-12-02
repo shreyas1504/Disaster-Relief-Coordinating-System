@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <style>
+        /* Add your styles for the login page here */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        #loginForm {
+            margin: 20px auto;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <div id="loginForm">
+        <!-- Added email input -->
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <script>
+        function login() {
+            // Check the browser console for any messages
+            console.log('Login button clicked.');
+
+            // Add your login logic here
+            // For simplicity, you can check the entered username and password
+            // and redirect to the main page if they are correct.
+            const email = document.getElementById('email').value;  // Fixed this line
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Example: Check if email, username, and password are not empty
+            if (email === 'xyz@gmail.com' && username !== "" && password !== "") {
+                // Redirect to the main page (replace 'main.html' with your actual file name)
+                window.location.href = 'main.html';
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        }
+    </script>
+</body>
+
+</html>

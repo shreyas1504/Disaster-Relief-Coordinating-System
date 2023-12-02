@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Entity Registration and Job Allocation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        #registration,
+        #allocation,
+        #map {
+            margin: 20px auto;
+            max-width: 600px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #map {
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .delivery-boy {
+            margin: 10px;
+        }
+
+        #emergencyBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e44d26;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #emergencyBtn:hover {
+            background-color: #c73113;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+
+        #registrationStatus,
+        #allocationStatus {
+            margin-top: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Include Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <h1>Disaster Relief Coordinating System</h1>
+    <div id="registration">
+        <h2>Delivery Boy Registration</h2>
+        <div class="delivery-boy">
+            <input type="text" id="entityInput" placeholder="Enter Delivery Boy (A, B, C)">
+            <button onclick="registerEntities()">Register Delivery Boys</button>
+        </div>
+        <div id="registrationStatus"></div>
+    </div>
+
+    <div id="allocation">
+        <h2>Job Allocation</h2>
+        <button onclick="allocateRoutes()">Allocate Routes</button>
+        <div id="allocationStatus"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <button id="emergencyBtn" onclick="showEmergencyContacts()">Emergency Contact List</button>
+
+    <!-- Link to the Login Page -->
+    <button onclick="redirectToLoginPage()">Go to Login Page</button>
+
+    <script>
+        let deliveryBoys = [];
+        let jobs = ['Alpha', 'Beta', 'Gamma'];
+        let allocationStatus = {};
+        let routeColors = ['red', 'green', 'blue'];
+
+        // Initialize the Leaflet map
+        var map = L.map('map').setView([30.3256, 76.3858], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        function registerEntities() {
+            const deliveryBoyInput = document.getElementById('entityInput');
+            const deliveryBoy = deliveryBoyInput.value.trim();
+
+            if (deliveryBoy !== "") {
+                deliveryBoys.push(deliveryBoy);
+                deliveryBoyInput.value = "";
+                document.getElementById('registrationStatus').innerHTML = 'Delivery Boy ' + deliveryBoy + ' registered.';
+            }
+        }
+
+        function allocateRoutes() {
+            if (deliveryBoys.length !== 3) {
+                document.getElementById('allocationStatus').innerHTML = 'Please register 3 delivery boys first.';
+            } else if (jobs.length < deliveryBoys.length) {
+                document.getElementById('allocationStatus').innerHTML = 'Not enough jobs for all delivery boys.';
+            } else {
+                deliveryBoys.forEach(deliveryBoy => {
+                    const randomJobIndex = Math.floor(Math.random() * jobs.length);
+                    const job = jobs[randomJobIndex];
+                    allocationStatus[deliveryBoy] = job;
+                    jobs.splice(randomJobIndex, 1);
+                });
+
+                // Display job routes on the map
+                deliveryBoys.forEach((deliveryBoy, index) => {
+                    // Generate random coordinates for the route (example)
+                    const latLngs = [
+                        [30.321 + 0.01 * index, 76.396 - 0.01 * index],
+                        [30.322 + 0.01 * index, 76.396 - 0.01 * index],
+                        [30.324 + 0.01 * index, 76.392 - 0.01 * index],
+                        [30.326 + 0.01 * index, 76.387 - 0.01 * index]
+                    ];
+
+                    L.polyline(latLngs, { color: routeColors[index] }).addTo(map).bindPopup(deliveryBoy + ' - ' + allocationStatus[deliveryBoy]);
+                });
+
+                document.getElementById('allocationStatus').innerHTML = 'Routes allocated to delivery boys.';
+            }
+        }
+
+        function showEmergencyContacts() {
+            const emergencyNumbers = generateEmergencyNumbers();
+            alert('Emergency Contact List:\n' + emergencyNumbers.join('\n'));
+        }
+
+        function generateEmergencyNumbers() {
+            const emergencyNumbers = [
+                '911 - Emergency Services',
+                '112 - Emergency Services (Europe)',
+                '999 - Emergency Services (UK)',
+                '123 - nn    Suicide Prevention Hotline',
+                '800-273-TALK (8255) - National Suicide Prevention Lifeline'
+            ];
+            return emergencyNumbers;
+        }
+
+        // Redirect to the Login Page
+        function redirectToLoginPage() {
+            // Redirect to the login page (replace 'login.html' with your actual file name)
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>
